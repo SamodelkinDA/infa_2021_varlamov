@@ -1,3 +1,1 @@
-# infa_2020_ivanov
-
-readme description
+### That is a 3rd lab(lab about Turtle)
