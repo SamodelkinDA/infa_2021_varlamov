@@ -1,0 +1,6 @@
+up_space, diagonal_right, vertical_down, vertical_down, end
+up_space, up_space, vertical_down, horizontal_rigth, vertical_up, vertical_down, vertical_down, end
+up_space, diagonal_right, vertical_down, vertical_down, end
+up_space, up_space, horizontal_rigth, diagonal_left, vertical_down, end
+up_space, up_space, horizontal_rigth, vertical_down, vertical_down, horizontal_left, vertical_up, vertical_up, end
+up_space, up_space, horizontal_rigth, vertical_down, vertical_down, horizontal_left, vertical_up, vertical_up, end
