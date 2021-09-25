@@ -3,7 +3,6 @@ from pygame.draw import *
 
 pygame.init()
 FPS = 15
-screen = pygame.display.set_mode((800, 800))
 BLUE = (95, 188, 211)
 YELLOW = (200, 171, 55)
 GREY = (108, 103, 83)
@@ -11,13 +10,15 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 LIGHT_GRAY = (211, 211, 211)
 GREEN = (55, 200, 113)
-numb_of_lines = 15
+
+screen = pygame.display.set_mode((800, 800))
 
 # background:
 rect(screen, BLUE, [0, 0 , 800, 800 / 2], 0)
 polygon(screen, GREEN, [[0, 800], [0, 400], [800, 400], [800, 800]])
 
 # чтобы много заборов сделать в третьем задании создаю сразу класс для забора:
+# lines_in_wall - число полосок в заборе, left_x и start_y задают левый верхний угол забора
 class wall:
     def __init__(self, lines_in_wall, length, width, left_x, start_y):
         self.lines = lines_in_wall

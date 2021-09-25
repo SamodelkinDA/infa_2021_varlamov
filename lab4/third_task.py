@@ -2,9 +2,6 @@ import pygame
 from pygame.draw import *
 
 FPS = 15
-clock = pygame.time.Clock()
-finished = False
-
 BLUE = (95, 188, 211)
 YELLOW = (200, 171, 55)
 GREY = (108, 103, 83)
@@ -13,10 +10,9 @@ BLACK = (0, 0, 0)
 GREEN = (55, 200, 113)
 LIGHT_GRAY = (211, 211, 211)
 
-pygame.init()
-
 # чтобы много заборов сделать в третьем задании создаю сразу класс для забора:
 # lines_in_wall - число полосок в заборе, left_x и start_y задают левый верхний угол забора
+# where - это Surface, где будет находится стена.
 class wall:
     def __init__(self, where, lines_in_wall, length, width, left_x, start_y, ):
         self.where = where
@@ -32,8 +28,13 @@ class wall:
             x = self.left_x + self.wid // self.lines * i
             line(self.where, BLACK, [x, self.start_y], [x, self.start_y + self.leng])
         line(self.where, BLACK, [self.left_x, self.start_y + self.leng], [self.left_x + self.wid, self.start_y + self.leng])
-        # pygame.display.update()
 
+# далее все Surface'ы создаются через .copy(), чтобы избежать рисования на основном дисплее, то есть
+# мы при создании нужного нам Surface, который мы потом будем blit'ить с основным Surface
+# делаем так, чтобы при создании до блита ничего на дисплее не рисовалось. Также для всех Surface'ов
+# мы сразу создаем объекты get_rect, чтобы быть готовыми их blit'ить.
+
+# Walls:
 wall_surface = pygame.display.set_mode((800, 800)).copy()
 wall_rect = wall_surface.get_rect(center=(400, 400))
 wa0 = wall(wall_surface, 15, 300, 700, 100, 50)
@@ -83,6 +84,8 @@ ellipse(dog_surface, BLACK, [150 ,475, 20, 10], 1)
 circle(dog_surface, BLACK, [160, 480], 5)
 circle(dog_surface, BLACK, [160, 480], 5)
 
+# Здесь мы меняем конфигурации всех собак
+# методы pygame.transform возвращают нам новый измененный указанным образом Surface
 dog_1_surface = dog_surface.copy()
 dog_1_rect = dog_surface.get_rect(center=(400, 400))
 
@@ -124,22 +127,27 @@ ellipse(chain_surface, BLACK, [425, 592, 30, 5], 1)
 circle(chain_surface, BLACK, [420, 592], 10, 1)
 ellipse(chain_surface, BLACK, [392, 593, 25, 10], 1)
 ellipse(chain_surface, BLACK, [372, 598, 25, 10], 1)
-pygame.display.update()
 
-# background:
+# Экран и фон
 screen = pygame.display.set_mode((800, 800))
 rect(screen, BLUE, [0, 0 , 800, 800 / 2], 0)
 polygon(screen, GREEN, [[0, 800], [0, 400], [800, 400], [800, 800]])
 
+# Здесь происходит отрисовка всего на дисплее, мы blit'им наши Surface'ы в указанной для них rect области
+# в один общий Surface. Удобство заключается в том, что мы можем спокойно выбрать порядок отрисовки, а не двигать
+# огромные куски кода, чтобы указать порядок.
 screen.blit(wall_surface, wall_rect)
 screen.blit(dog_1_surface, dog_1_rect)
-screen.blit(dog_2_surface, dog_2_rect)
+screen.blit(dog_2_surface, dog_2_rect) 
 screen.blit(dog_3_surface, dog_3_rect)
 screen.blit(house_surface, house_rect)
 screen.blit(chain_surface, chain_rect)
 screen.blit(dog_4_surface, dog_4_rect)
 
+pygame.init()
 pygame.display.update()
+clock = pygame.time.Clock()
+finished = False
 
 while not finished:
     clock.tick(FPS)
