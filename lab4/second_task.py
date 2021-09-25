@@ -46,9 +46,20 @@ polygon(screen, YELLOW, [[640, 545], [680, 525], [680, 595], [640, 635]])
 polygon(screen, BLACK, [[640, 545], [680, 525], [680, 595], [640, 635]], 1)
 circle(screen, BLACK, [575, 555], 25)
 #chain:
-ellipse(screen, BLACK, [575 - 30 / 1.4, 555 + 17 / 1.4, 25, 15], 1)
-circle(screen, GREY, [550, 575], 8)
+ellipse(screen, BLACK, [570 - 30 / 1.4, 555 + 17 / 1.4, 25, 15], 1)
+circle(screen, BLACK, [536, 586], 10, 1)
+circle(screen, GREY, [545, 575], 8)
+circle(screen, BLACK, [545, 575], 8, 1)
+ellipse(screen, BLACK, [508, 590, 30, 10], 1)
+circle(screen, BLACK, [505, 598], 8, 1)
+ellipse(screen, BLACK, [462, 593, 40, 15], 1)
+circle(screen, BLACK, [455, 599], 10, 1)
+ellipse(screen, BLACK, [425, 592, 30, 5], 1)
+circle(screen, BLACK, [420, 592], 10, 1)
+ellipse(screen, BLACK, [392, 593, 25, 10], 1)
+ellipse(screen, BLACK, [372, 598, 25, 10], 1)
 
+pygame.mouse.get_pos()
 
 
 pygame.display.update()
