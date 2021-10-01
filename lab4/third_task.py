@@ -14,7 +14,7 @@ LIGHT_GRAY = (211, 211, 211)
 # lines_in_wall - число полосок в заборе, left_x и start_y задают левый верхний угол забора
 # where - это Surface, где будет находится стена.
 class wall:
-    def __init__(self, where, lines_in_wall, length, width, left_x, start_y, ):
+    def __init__(self, where, lines_in_wall, length, width, left_x, start_y):
         self.where = where
         self.lines = lines_in_wall
         self.leng = length
