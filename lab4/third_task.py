@@ -35,34 +35,24 @@ class wall:
 # мы сразу создаем объекты get_rect, чтобы быть готовыми их blit'ить.
 
 # Walls:
-wall_surface = pygame.display.set_mode((800, 800)).copy()
+wall_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+wall_surface.fill((0, 0, 0, 0))
 wall_rect = wall_surface.get_rect(center=(400, 400))
-wa0 = wall(wall_surface, 15, 300, 700, 100, 50)
-wa0.draw()
-wa2 = wall(wall_surface, 15, 400, 500, 0, 100)
-wa2.draw()
-wa1 = wall(wall_surface, 15, 300, 300, 0, 250)
-wa1.draw()
-wa3 = wall(wall_surface, 15, 200, 400, 400, 350)
-wa3.draw()
+massive_wall = ((300, 700, 100, 50), (400, 500, 0, 100), (300, 300, 0, 250), (200, 400, 400, 350))
+for i in massive_wall:
+    wall(wall_surface, 15, *i).draw()
 
 # Dog:
-dog_surface = pygame.display.set_mode((800, 800)).copy()
-dog_surface.set_colorkey((255, 255, 255))
+dog_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+dog_surface.fill((0, 0, 0, 0))
 dog_rect = dog_surface.get_rect(center=(0, 0))
 #   Body:
-ellipse(dog_surface, GREY, [110, 460, 180, 90])
-ellipse(dog_surface, GREY, [220, 450, 100, 70])
-circle(dog_surface, GREY, [240, 480], 30)
-ellipse(dog_surface, GREY, [250, 460, 30, 115])
-ellipse(dog_surface, GREY, [218, 560, 50, 20])
-circle(dog_surface, GREY, [315, 495], 30)
-ellipse(dog_surface, GREY, [305, 470, 30, 115])
-ellipse(dog_surface, GREY, [274, 570, 50, 20])
-ellipse(dog_surface, GREY, [95, 485, 45, 110])
-ellipse(dog_surface, GREY, [65, 580, 60, 20])
-ellipse(dog_surface, GREY, [180, 510, 45, 110])
-ellipse(dog_surface, GREY, [150, 605, 60, 20])
+massiv_ellipses = ([110, 460, 180, 90], [220, 450, 100, 70], [210, 450, 60, 60], [250, 460, 30, 115],
+                  [218, 560, 50, 20], [285, 465, 60, 60], [305, 470, 30, 115], [274, 570, 50, 20],
+                  [95, 485, 45, 110], [65, 580, 60, 20], [180, 510, 45, 110], [150, 605, 60, 20]
+                  )
+for i in massiv_ellipses:
+    ellipse(dog_surface, GREY, i)
 #    Head:
 rect(dog_surface, GREY, [100, 450, 80, 80])
 rect(dog_surface, BLACK, [100, 450, 80, 80], 1)
@@ -86,63 +76,60 @@ circle(dog_surface, BLACK, [160, 480], 5)
 
 # Здесь мы меняем конфигурации всех собак
 # методы pygame.transform возвращают нам новый измененный указанным образом Surface
-dog_1_surface = dog_surface.copy()
-dog_1_rect = dog_surface.get_rect(center=(400, 400))
 
-dog_2_surface = pygame.transform.flip(dog_surface.copy(), True, False)
-dog_2_rect = dog_surface.get_rect(center=(0, 550))
-
-dog_3_surface = pygame.transform.flip(dog_surface.copy(), True, False)
-dog_3_rect = dog_surface.get_rect(center=(500, 380))
-
-dog_4_surface = pygame.transform.scale2x(dog_surface.copy())
-dog_4_rect = dog_4_surface.get_rect(center=(1200, 500))
-
+dog_surfaces = []
+dog_rects = []
+koordinates = ((400, 400), (0, 550), (500, 380), (1200, 500))
+dog_surfaces.append(dog_surface.copy())
+dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
+dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
+dog_surfaces.append(pygame.transform.scale2x(dog_surface.copy()))
+for i, j in zip(range(4), koordinates):
+    dog_rects.append(dog_surfaces[i].get_rect(center=j))
+    
 #Dog house:
-house_surface = pygame.display.set_mode((800, 800)).copy()
+house_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+house_surface.fill((0, 0, 0, 0))
 house_rect = house_surface.get_rect(center=(400, 400))
-polygon(house_surface, YELLOW, [[600, 420], [520, 480], [640, 545]])
-polygon(house_surface, BLACK, [[600, 420], [520, 480], [640, 545]], 1)
-polygon(house_surface, YELLOW, [[600, 420], [640, 545], [640 + 40, 545 - 20], [600 + 40, 420 - 20]])
-polygon(house_surface, BLACK, [[600, 420], [640, 545], [640 + 40, 545 - 20], [600 + 40, 420 - 20]], 1)
-polygon(house_surface, YELLOW, [[520, 480], [520, 480 + 90], [640, 545 + 90], [640, 545]])
-polygon(house_surface, BLACK, [[520, 480], [520, 480 + 90], [640, 545 + 90], [640, 545]], 1)
-polygon(house_surface, YELLOW, [[640, 545], [680, 525], [680, 595], [640, 635]])
-polygon(house_surface, BLACK, [[640, 545], [680, 525], [680, 595], [640, 635]], 1)
+massive_house = (
+    [[600, 420], [520, 480], [640, 545]],
+    [[600, 420], [640, 545], [680, 525], [640, 400]],
+    [[520, 480], [520, 570], [640, 635], [640, 545]],
+    [[640, 545], [680, 525], [680, 595], [640, 635]]
+)
+for i in massive_house:
+    polygon(house_surface, YELLOW, i)
+    polygon(house_surface, BLACK, i, 1)
 circle(house_surface, BLACK, [575, 555], 25)
 
 #chain:
-chain_surface = pygame.display.set_mode((800, 800)).copy()
+chain_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+chain_surface.fill((0, 0, 0, 0))
 chain_rect = chain_surface.get_rect(center=(400, 400))
-chain_surface.set_colorkey((255, 255, 255))
-ellipse(chain_surface, BLACK, [570 - 30 / 1.4, 555 + 17 / 1.4, 25, 15], 1)
-circle(chain_surface, BLACK, [536, 586], 10, 1)
 circle(chain_surface, GREY, [545, 575], 8)
-circle(chain_surface, BLACK, [545, 575], 8, 1)
-ellipse(chain_surface, BLACK, [508, 590, 30, 10], 1)
-circle(chain_surface, BLACK, [505, 598], 8, 1)
-ellipse(chain_surface, BLACK, [462, 593, 40, 15], 1)
-circle(chain_surface, BLACK, [455, 599], 10, 1)
-ellipse(chain_surface, BLACK, [425, 592, 30, 5], 1)
-circle(chain_surface, BLACK, [420, 592], 10, 1)
-ellipse(chain_surface, BLACK, [392, 593, 25, 10], 1)
-ellipse(chain_surface, BLACK, [372, 598, 25, 10], 1)
+massiv_ellipses = ([549, 543, 25, 15], [526, 576, 20, 20], [537, 567, 16, 16], [508, 590, 30, 10],
+                  [497, 590, 16, 16], [462, 593, 40, 15], [445, 589, 20, 20], [425, 592, 30, 5], 
+                  [410, 582, 20, 20], [392, 593, 25, 10], [372, 598, 25, 10]
+                  )
+for i in massiv_ellipses:
+    ellipse(chain_surface, BLACK, i, 1)
 
 # Экран и фон
 screen = pygame.display.set_mode((800, 800))
 rect(screen, BLUE, [0, 0 , 800, 800 / 2], 0)
-polygon(screen, GREEN, [[0, 800], [0, 400], [800, 400], [800, 800]])
+rect(screen, GREEN, [0, 400 , 800, 800 / 2], 0)
+
 
 # Здесь происходит отрисовка всего на дисплее, мы blit'им наши Surface'ы в указанной для них rect области
 # в один общий Surface. Удобство заключается в том, что мы можем спокойно выбрать порядок отрисовки, а не двигать
 # огромные куски кода, чтобы указать порядок.
+
 screen.blit(wall_surface, wall_rect)
-screen.blit(dog_1_surface, dog_1_rect)
-screen.blit(dog_2_surface, dog_2_rect) 
-screen.blit(dog_3_surface, dog_3_rect)
+for i in range(3):
+    screen.blit(dog_surfaces[i], dog_rects[i])
 screen.blit(house_surface, house_rect)
 screen.blit(chain_surface, chain_rect)
-screen.blit(dog_4_surface, dog_4_rect)
+screen.blit(dog_surfaces[3], dog_rects[3])
 
 pygame.init()
 pygame.display.update()
