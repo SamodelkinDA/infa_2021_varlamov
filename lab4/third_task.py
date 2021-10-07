@@ -75,7 +75,6 @@ def draw_dog_head():
     circle(dog_head_surf, BLACK, [160, 480], 5)
     return dog_head_surf
 
-
 def draw_dog():
     dog_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
     dog_surface.fill((0, 0, 0, 0))
@@ -92,7 +91,24 @@ def draw_dog():
     return dog_surface
 
 def draw_picture():
-    pass
+    rect(screen, BLUE, [0, 0 , 800, 800 / 2], 0)
+    rect(screen, GREEN, [0, 400 , 800, 800 / 2], 0)
+    dog_surface = draw_dog()
+    dog_surfaces = []
+    dog_rects = []
+    koordinates = ((400, 400), (0, 550), (500, 380), (1200, 500))
+    dog_surfaces.append(dog_surface.copy())
+    dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
+    dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
+    dog_surfaces.append(pygame.transform.scale2x(dog_surface.copy()))
+    for i, j in zip(range(4), koordinates):
+        dog_rects.append(dog_surfaces[i].get_rect(center=j))
+    screen.blit(wall_surface, wall_rect)
+    for i in range(3):
+        screen.blit(dog_surfaces[i], dog_rects[i])
+    screen.blit(*draw_house())
+    screen.blit(*draw_chain())
+    screen.blit(dog_surfaces[3], dog_rects[3])
 
 def draw_chain():
     chain_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
@@ -107,6 +123,21 @@ def draw_chain():
         ellipse(chain_surface, BLACK, i, 1)
     return (chain_surface, chain_rect)
 
+def draw_house():
+    house_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+    house_surface.fill((0, 0, 0, 0))
+    house_rect = house_surface.get_rect(center=(400, 400))
+    massive_house = (
+        [[600, 420], [520, 480], [640, 545]],
+        [[600, 420], [640, 545], [680, 525], [640, 400]],
+        [[520, 480], [520, 570], [640, 635], [640, 545]],
+        [[640, 545], [680, 525], [680, 595], [640, 635]]
+    )
+    for i in massive_house:
+        polygon(house_surface, YELLOW, i)
+        polygon(house_surface, BLACK, i, 1)
+    circle(house_surface, BLACK, [575, 555], 25)
+    return (house_surface, house_rect)
 
 # Walls:
 wall_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
@@ -116,59 +147,16 @@ massive_wall = ((300, 700, 100, 50), (400, 500, 0, 100), (300, 300, 0, 250), (20
 for i in massive_wall:
     wall(wall_surface, 15, *i).draw()
 
-# Dog:
-
-dog_surface = draw_dog()
-
-# Здесь мы меняем конфигурации всех собак
-# методы pygame.transform возвращают нам новый измененный указанным образом Surface
-
-dog_surfaces = []
-dog_rects = []
-koordinates = ((400, 400), (0, 550), (500, 380), (1200, 500))
-dog_surfaces.append(dog_surface.copy())
-dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
-dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
-dog_surfaces.append(pygame.transform.scale2x(dog_surface.copy()))
-for i, j in zip(range(4), koordinates):
-    dog_rects.append(dog_surfaces[i].get_rect(center=j))
-    
-#Dog house:
-house_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
-house_surface.fill((0, 0, 0, 0))
-house_rect = house_surface.get_rect(center=(400, 400))
-massive_house = (
-    [[600, 420], [520, 480], [640, 545]],
-    [[600, 420], [640, 545], [680, 525], [640, 400]],
-    [[520, 480], [520, 570], [640, 635], [640, 545]],
-    [[640, 545], [680, 525], [680, 595], [640, 635]]
-)
-for i in massive_house:
-    polygon(house_surface, YELLOW, i)
-    polygon(house_surface, BLACK, i, 1)
-circle(house_surface, BLACK, [575, 555], 25)
 
 
 
 # Экран и фон
 screen = pygame.display.set_mode((800, 800))
-rect(screen, BLUE, [0, 0 , 800, 800 / 2], 0)
-rect(screen, GREEN, [0, 400 , 800, 800 / 2], 0)
 
-
-# Здесь происходит отрисовка всего на дисплее, мы blit'им наши Surface'ы в указанной для них rect области
-# в один общий Surface. Удобство заключается в том, что мы можем спокойно выбрать порядок отрисовки, а не двигать
-# огромные куски кода, чтобы указать порядок.
-
-screen.blit(wall_surface, wall_rect)
-for i in range(3):
-    screen.blit(dog_surfaces[i], dog_rects[i])
-screen.blit(house_surface, house_rect)
-screen.blit(*draw_chain())
-screen.blit(dog_surfaces[3], dog_rects[3])
 
 pygame.init()
 pygame.display.update()
+
 clock = pygame.time.Clock()
 finished = False
 
@@ -178,6 +166,7 @@ while not finished:
         if event.type == pygame.QUIT:
             finished = True
     #wall.update()
-    #pygame.display.flip()
+    draw_picture()
+    pygame.display.flip()
 
 pygame.quit()
