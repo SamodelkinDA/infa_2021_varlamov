@@ -29,10 +29,84 @@ class wall:
             line(self.where, BLACK, [x, self.start_y], [x, self.start_y + self.leng])
         line(self.where, BLACK, [self.left_x, self.start_y + self.leng], [self.left_x + self.wid, self.start_y + self.leng])
 
+class Dog:
+    def __init__(self, where, lines_in_wall, length, width, left_x, start_y):
+        self.where = where
+        self.lines = lines_in_wall
+        self.leng = length
+        self.wid = width
+        self.left_x = left_x
+        self.start_y = start_y
+
+    def draw(self):
+        rect(self.where, YELLOW, [self.left_x, self.start_y, self.wid, self.leng])
+        rect(self.where, LIGHT_GRAY, [self.left_x, self.start_y, self.wid, self.leng], 1)
+        for i in range(1, self.lines):
+            x = self.left_x + self.wid // self.lines * i
+            line(self.where, BLACK, [x, self.start_y], [x, self.start_y + self.leng])
+        line(self.where, BLACK, [self.left_x, self.start_y + self.leng], [self.left_x + self.wid, self.start_y + self.leng])
+
 # далее все Surface'ы создаются через .copy(), чтобы избежать рисования на основном дисплее, то есть
 # мы при создании нужного нам Surface, который мы потом будем blit'ить с основным Surface
 # делаем так, чтобы при создании до блита ничего на дисплее не рисовалось. Также для всех Surface'ов
 # мы сразу создаем объекты get_rect, чтобы быть готовыми их blit'ить.
+
+def draw_dog_head():
+    dog_head_surf = pygame.Surface((800, 800), pygame.SRCALPHA)
+    dog_head_surf.fill((0, 0, 0, 0))
+    rect(dog_head_surf, GREY, [100, 450, 80, 80])
+    rect(dog_head_surf, BLACK, [100, 450, 80, 80], 1)
+    circle(dog_head_surf, GREY, [100, 460], 12)
+    circle(dog_head_surf, BLACK, [100, 460], 12, 1)
+    circle(dog_head_surf, GREY, [180, 460], 12)
+    circle(dog_head_surf, BLACK, [180, 460], 12, 1)
+    arc(dog_head_surf, BLACK, [105, 505, 70, 40], 0.2, 2.7)
+    polygon(dog_head_surf, WHITE, [[125, 507], [130, 490], [135, 505]])
+    polygon(dog_head_surf, BLACK, [[125, 507], [130, 490], [135, 505]], 1)
+    polygon(dog_head_surf, WHITE, [[165, 510], [160, 492], [155, 509]])
+    polygon(dog_head_surf, BLACK, [[165, 510], [160, 492], [155, 509]], 1)
+    ellipse(dog_head_surf, WHITE, [115 ,475, 20, 10])
+    ellipse(dog_head_surf, BLACK, [115 ,475, 20, 10], 1)
+    circle(dog_head_surf, BLACK, [125, 480], 5)
+    circle(dog_head_surf, BLACK, [125, 480], 5)
+    ellipse(dog_head_surf, WHITE, [150 ,475, 20, 10])
+    ellipse(dog_head_surf, BLACK, [150 ,475, 20, 10], 1)
+    circle(dog_head_surf, BLACK, [160, 480], 5)
+    circle(dog_head_surf, BLACK, [160, 480], 5)
+    return dog_head_surf
+
+
+def draw_dog():
+    dog_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+    dog_surface.fill((0, 0, 0, 0))
+    dog_rect = dog_surface.get_rect(center=(0, 0))
+    #   Body:
+    massiv_ellipses = ([110, 460, 180, 90], [220, 450, 100, 70], [210, 450, 60, 60], [250, 460, 30, 115],
+                      [218, 560, 50, 20], [285, 465, 60, 60], [305, 470, 30, 115], [274, 570, 50, 20],
+                      [95, 485, 45, 110], [65, 580, 60, 20], [180, 510, 45, 110], [150, 605, 60, 20]
+                      )
+    for i in massiv_ellipses:
+        ellipse(dog_surface, GREY, i)
+    #    Head:
+    dog_surface.blit(draw_dog_head(), (0, 0))
+    return dog_surface
+
+def draw_picture():
+    pass
+
+def draw_chain():
+    chain_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+    chain_surface.fill((0, 0, 0, 0))
+    chain_rect = chain_surface.get_rect(center=(400, 400))
+    circle(chain_surface, GREY, [545, 575], 8)
+    massiv_ellipses = ([549, 543, 25, 15], [526, 576, 20, 20], [537, 567, 16, 16], [508, 590, 30, 10],
+                      [497, 590, 16, 16], [462, 593, 40, 15], [445, 589, 20, 20], [425, 592, 30, 5], 
+                      [410, 582, 20, 20], [392, 593, 25, 10], [372, 598, 25, 10]
+                      )
+    for i in massiv_ellipses:
+        ellipse(chain_surface, BLACK, i, 1)
+    return (chain_surface, chain_rect)
+
 
 # Walls:
 wall_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
@@ -43,36 +117,8 @@ for i in massive_wall:
     wall(wall_surface, 15, *i).draw()
 
 # Dog:
-dog_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
-dog_surface.fill((0, 0, 0, 0))
-dog_rect = dog_surface.get_rect(center=(0, 0))
-#   Body:
-massiv_ellipses = ([110, 460, 180, 90], [220, 450, 100, 70], [210, 450, 60, 60], [250, 460, 30, 115],
-                  [218, 560, 50, 20], [285, 465, 60, 60], [305, 470, 30, 115], [274, 570, 50, 20],
-                  [95, 485, 45, 110], [65, 580, 60, 20], [180, 510, 45, 110], [150, 605, 60, 20]
-                  )
-for i in massiv_ellipses:
-    ellipse(dog_surface, GREY, i)
-#    Head:
-rect(dog_surface, GREY, [100, 450, 80, 80])
-rect(dog_surface, BLACK, [100, 450, 80, 80], 1)
-circle(dog_surface, GREY, [100, 460], 12)
-circle(dog_surface, BLACK, [100, 460], 12, 1)
-circle(dog_surface, GREY, [180, 460], 12)
-circle(dog_surface, BLACK, [180, 460], 12, 1)
-arc(dog_surface, BLACK, [105, 505, 70, 40], 0.2, 2.7)
-polygon(dog_surface, WHITE, [[125, 507], [130, 490], [135, 505]])
-polygon(dog_surface, BLACK, [[125, 507], [130, 490], [135, 505]], 1)
-polygon(dog_surface, WHITE, [[165, 510], [160, 492], [155, 509]])
-polygon(dog_surface, BLACK, [[165, 510], [160, 492], [155, 509]], 1)
-ellipse(dog_surface, WHITE, [115 ,475, 20, 10])
-ellipse(dog_surface, BLACK, [115 ,475, 20, 10], 1)
-circle(dog_surface, BLACK, [125, 480], 5)
-circle(dog_surface, BLACK, [125, 480], 5)
-ellipse(dog_surface, WHITE, [150 ,475, 20, 10])
-ellipse(dog_surface, BLACK, [150 ,475, 20, 10], 1)
-circle(dog_surface, BLACK, [160, 480], 5)
-circle(dog_surface, BLACK, [160, 480], 5)
+
+dog_surface = draw_dog()
 
 # Здесь мы меняем конфигурации всех собак
 # методы pygame.transform возвращают нам новый измененный указанным образом Surface
@@ -102,17 +148,7 @@ for i in massive_house:
     polygon(house_surface, BLACK, i, 1)
 circle(house_surface, BLACK, [575, 555], 25)
 
-#chain:
-chain_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
-chain_surface.fill((0, 0, 0, 0))
-chain_rect = chain_surface.get_rect(center=(400, 400))
-circle(chain_surface, GREY, [545, 575], 8)
-massiv_ellipses = ([549, 543, 25, 15], [526, 576, 20, 20], [537, 567, 16, 16], [508, 590, 30, 10],
-                  [497, 590, 16, 16], [462, 593, 40, 15], [445, 589, 20, 20], [425, 592, 30, 5], 
-                  [410, 582, 20, 20], [392, 593, 25, 10], [372, 598, 25, 10]
-                  )
-for i in massiv_ellipses:
-    ellipse(chain_surface, BLACK, i, 1)
+
 
 # Экран и фон
 screen = pygame.display.set_mode((800, 800))
@@ -128,7 +164,7 @@ screen.blit(wall_surface, wall_rect)
 for i in range(3):
     screen.blit(dog_surfaces[i], dog_rects[i])
 screen.blit(house_surface, house_rect)
-screen.blit(chain_surface, chain_rect)
+screen.blit(*draw_chain())
 screen.blit(dog_surfaces[3], dog_rects[3])
 
 pygame.init()
@@ -141,5 +177,7 @@ while not finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished = True
+    #wall.update()
+    #pygame.display.flip()
 
 pygame.quit()
