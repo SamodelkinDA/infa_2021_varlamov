@@ -1,7 +1,8 @@
 import pygame
 from pygame.draw import *
+import random 
 
-FPS = 15
+FPS = 4
 BLUE = (95, 188, 211)
 YELLOW = (200, 171, 55)
 GREY = (108, 103, 83)
@@ -9,42 +10,51 @@ WHITE = (254, 254, 254)
 BLACK = (0, 0, 0)
 GREEN = (55, 200, 113)
 LIGHT_GRAY = (211, 211, 211)
+RED = (255, 0, 0)
 
 # чтобы много заборов сделать в третьем задании создаю сразу класс для забора:
 # lines_in_wall - число полосок в заборе, left_x и start_y задают левый верхний угол забора
 # where - это Surface, где будет находится стена.
+
 class wall:
-    def __init__(self, where, lines_in_wall, length, width, left_x, start_y):
+    def __init__(self, where, length, width, left_x, start_y):
         self.where = where
-        self.lines = lines_in_wall
+        self.lines_y = random.randint(10, 15)
+        self.lines_x = random.randint(8, 15)
         self.leng = length
         self.wid = width
         self.left_x = left_x
         self.start_y = start_y
-    def draw(self):
-        rect(self.where, YELLOW, [self.left_x, self.start_y, self.wid, self.leng])
-        rect(self.where, LIGHT_GRAY, [self.left_x, self.start_y, self.wid, self.leng], 1)
-        for i in range(1, self.lines):
-            x = self.left_x + self.wid // self.lines * i
-            line(self.where, BLACK, [x, self.start_y], [x, self.start_y + self.leng])
-        line(self.where, BLACK, [self.left_x, self.start_y + self.leng], [self.left_x + self.wid, self.start_y + self.leng])
-
-class Dog:
-    def __init__(self, where, lines_in_wall, length, width, left_x, start_y):
-        self.where = where
-        self.lines = lines_in_wall
-        self.leng = length
-        self.wid = width
-        self.left_x = left_x
-        self.start_y = start_y
+        self.dy = self.leng // self.lines_x
+        self.dx = self.wid // self.lines_y
+        self.surf = pygame.Surface((800, 800), pygame.SRCALPHA)
+        self.time = pygame.time.get_ticks() - 3000
 
     def draw(self):
-        rect(self.where, YELLOW, [self.left_x, self.start_y, self.wid, self.leng])
-        rect(self.where, LIGHT_GRAY, [self.left_x, self.start_y, self.wid, self.leng], 1)
-        for i in range(1, self.lines):
-            x = self.left_x + self.wid // self.lines * i
-            line(self.where, BLACK, [x, self.start_y], [x, self.start_y + self.leng])
-        line(self.where, BLACK, [self.left_x, self.start_y + self.leng], [self.left_x + self.wid, self.start_y + self.leng])
+        now = pygame.time.get_ticks()
+        if now - self.time > 3000:
+            self.surf.fill((0, 0, 0, 0))
+            rect(self.surf, YELLOW, [self.left_x, self.start_y, self.wid, self.leng])
+            for i in range(0, self.lines_y + 1):
+                x = self.left_x + i * self.dx
+                line(self.surf, BLACK, [x, self.start_y], [x, self.start_y + self.leng])
+            for i in range(0, self.lines_x + 1):
+                y = self.start_y + i * self.dy
+                line(self.surf, BLACK, [self.left_x, y], [self.left_x + self.wid, y])
+            for i in range(0, self.lines_y):
+                x = self.left_x + i * self.dx
+                for j in range(0, self.lines_x):
+                    y = self.start_y + j * self.dy
+                    pr = random.randint(0, 100)
+                    if pr < 10:
+                        self.surf.blit(pygame.transform.scale(draw_dog(0), (self.dx, self.dy)) , (x, y))
+                    elif 10 <= pr < 20:
+                        self.surf.blit(pygame.transform.scale(draw_dog_head(0), (self.dx, self.dy)) , (x, y))
+                    elif 20 <= pr < 30:
+                        pass
+                        #rect(self.surf, RED , [x, y, self.dx, self.dy])
+        self.where.blit(self.surf, (0, 0))
+
 
 # далее все Surface'ы создаются через .copy(), чтобы избежать рисования на основном дисплее, то есть
 # мы при создании нужного нам Surface, который мы потом будем blit'ить с основным Surface
@@ -59,7 +69,7 @@ def draw_dog_head(mouth):
     for i in ([88, 448, 24, 24], [168, 448, 24, 24]):
         ellipse(dog_head_surf, GREY, i)
         ellipse(dog_head_surf, BLACK, i, 1)
-    if mouth == 0:
+    if mouth <= 90:
         arc(dog_head_surf, BLACK, [105, 505, 70, 40], 0.2, 2.7)
         for i in ([[125, 507], [130, 490], [135, 505]], [[165, 510], [160, 492], [155, 509]]):
             polygon(dog_head_surf, WHITE, i)
@@ -69,6 +79,7 @@ def draw_dog_head(mouth):
         for i in ([[125, 507], [130, 490], [135, 505]], [[165, 510], [160, 492], [155, 509]]):
             polygon(dog_head_surf, WHITE, i)
             polygon(dog_head_surf, BLACK, i, 1)
+        dog_head_surf.blit(dog_tungle, (135, 505))
     for i in ([115 ,475, 20, 10], [150 ,475, 20, 10]):
         ellipse(dog_head_surf, WHITE, i)
         ellipse(dog_head_surf, BLACK, i, 1)
@@ -76,7 +87,7 @@ def draw_dog_head(mouth):
     circle(dog_head_surf, BLACK, [160, 480], 5)
     return dog_head_surf
 
-def draw_dog():
+def draw_dog(mouth):
     dog_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
     dog_surface.fill((0, 0, 0, 0))
     dog_rect = dog_surface.get_rect(center=(0, 0))
@@ -88,26 +99,26 @@ def draw_dog():
     for i in massiv_ellipses:
         ellipse(dog_surface, GREY, i)
     #    Head:
-    dog_surface.blit(draw_dog_head(0), (0, 0))
+    if mouth > 90:
+        dog_surface.blit(draw_dog_head(mouth), (0, 20))
+    else:
+        dog_surface.blit(draw_dog_head(mouth), (0, 0))
     return dog_surface
 
 def draw_picture():
     rect(screen, BLUE, [0, 0 , 800, 800 / 2], 0)
     rect(screen, GREEN, [0, 400 , 800, 800 / 2], 0)
-    wall_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
     wall_surface.fill((0, 0, 0, 0))
-    wall_rect = wall_surface.get_rect(center=(400, 400))
-    massive_wall = ((300, 700, 100, 50), (400, 500, 0, 100), (300, 300, 0, 250), (200, 400, 400, 350))
-    for i in massive_wall:
-        wall(wall_surface, 15, *i).draw()
-    dog_surface = draw_dog()
+    for i in walls:
+        i.draw()
+
     dog_surfaces = []
     dog_rects = []
     koordinates = ((400, 400), (0, 550), (500, 380), (1200, 500))
-    dog_surfaces.append(dog_surface.copy())
-    dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
-    dog_surfaces.append(pygame.transform.flip(dog_surface.copy(), True, False))
-    dog_surfaces.append(pygame.transform.scale2x(dog_surface.copy()))
+    dog_surfaces.append(draw_dog(random.randint(0, 100)))
+    dog_surfaces.append(pygame.transform.flip(draw_dog(random.randint(0, 100)), True, False))
+    dog_surfaces.append(pygame.transform.flip(draw_dog(random.randint(0, 100)), True, False))
+    dog_surfaces.append(pygame.transform.scale2x(draw_dog(random.randint(0, 100))))
     for i, j in zip(range(4), koordinates):
         dog_rects.append(dog_surfaces[i].get_rect(center=j))
     screen.blit(wall_surface, wall_rect)
@@ -150,6 +161,17 @@ screen = pygame.display.set_mode((800, 800))
 pygame.init()
 pygame.display.update()
 
+wall_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+wall_rect = wall_surface.get_rect(center=(400, 400))
+massive_wall = ((300, 700, 100, 50), (400, 500, 0, 100), (300, 300, 0, 250), (200, 400, 400, 350))
+walls = []
+for i in massive_wall:
+    walls.append(wall(wall_surface, *i))
+
+dog_tungle = pygame.Surface((20, 40), pygame.SRCALPHA)
+dog_tungle.fill((0, 0, 0, 0))
+ellipse(dog_tungle, RED, [0, -30, 20, 60])
+
 clock = pygame.time.Clock()
 finished = False
 
@@ -158,7 +180,6 @@ while not finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished = True
-    #wall.update()
     draw_picture()
     pygame.display.flip()
 
