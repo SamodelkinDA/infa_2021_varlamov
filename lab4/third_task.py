@@ -51,27 +51,28 @@ class Dog:
 # делаем так, чтобы при создании до блита ничего на дисплее не рисовалось. Также для всех Surface'ов
 # мы сразу создаем объекты get_rect, чтобы быть готовыми их blit'ить.
 
-def draw_dog_head():
+def draw_dog_head(mouth):
     dog_head_surf = pygame.Surface((800, 800), pygame.SRCALPHA)
     dog_head_surf.fill((0, 0, 0, 0))
     rect(dog_head_surf, GREY, [100, 450, 80, 80])
     rect(dog_head_surf, BLACK, [100, 450, 80, 80], 1)
-    circle(dog_head_surf, GREY, [100, 460], 12)
-    circle(dog_head_surf, BLACK, [100, 460], 12, 1)
-    circle(dog_head_surf, GREY, [180, 460], 12)
-    circle(dog_head_surf, BLACK, [180, 460], 12, 1)
-    arc(dog_head_surf, BLACK, [105, 505, 70, 40], 0.2, 2.7)
-    polygon(dog_head_surf, WHITE, [[125, 507], [130, 490], [135, 505]])
-    polygon(dog_head_surf, BLACK, [[125, 507], [130, 490], [135, 505]], 1)
-    polygon(dog_head_surf, WHITE, [[165, 510], [160, 492], [155, 509]])
-    polygon(dog_head_surf, BLACK, [[165, 510], [160, 492], [155, 509]], 1)
-    ellipse(dog_head_surf, WHITE, [115 ,475, 20, 10])
-    ellipse(dog_head_surf, BLACK, [115 ,475, 20, 10], 1)
+    for i in ([88, 448, 24, 24], [168, 448, 24, 24]):
+        ellipse(dog_head_surf, GREY, i)
+        ellipse(dog_head_surf, BLACK, i, 1)
+    if mouth == 0:
+        arc(dog_head_surf, BLACK, [105, 505, 70, 40], 0.2, 2.7)
+        for i in ([[125, 507], [130, 490], [135, 505]], [[165, 510], [160, 492], [155, 509]]):
+            polygon(dog_head_surf, WHITE, i)
+            polygon(dog_head_surf, BLACK, i, 1)
+    else:
+        arc(dog_head_surf, BLACK, [105, 505, 70, 40], 0.2, 2.7)
+        for i in ([[125, 507], [130, 490], [135, 505]], [[165, 510], [160, 492], [155, 509]]):
+            polygon(dog_head_surf, WHITE, i)
+            polygon(dog_head_surf, BLACK, i, 1)
+    for i in ([115 ,475, 20, 10], [150 ,475, 20, 10]):
+        ellipse(dog_head_surf, WHITE, i)
+        ellipse(dog_head_surf, BLACK, i, 1)
     circle(dog_head_surf, BLACK, [125, 480], 5)
-    circle(dog_head_surf, BLACK, [125, 480], 5)
-    ellipse(dog_head_surf, WHITE, [150 ,475, 20, 10])
-    ellipse(dog_head_surf, BLACK, [150 ,475, 20, 10], 1)
-    circle(dog_head_surf, BLACK, [160, 480], 5)
     circle(dog_head_surf, BLACK, [160, 480], 5)
     return dog_head_surf
 
@@ -87,12 +88,18 @@ def draw_dog():
     for i in massiv_ellipses:
         ellipse(dog_surface, GREY, i)
     #    Head:
-    dog_surface.blit(draw_dog_head(), (0, 0))
+    dog_surface.blit(draw_dog_head(0), (0, 0))
     return dog_surface
 
 def draw_picture():
     rect(screen, BLUE, [0, 0 , 800, 800 / 2], 0)
     rect(screen, GREEN, [0, 400 , 800, 800 / 2], 0)
+    wall_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
+    wall_surface.fill((0, 0, 0, 0))
+    wall_rect = wall_surface.get_rect(center=(400, 400))
+    massive_wall = ((300, 700, 100, 50), (400, 500, 0, 100), (300, 300, 0, 250), (200, 400, 400, 350))
+    for i in massive_wall:
+        wall(wall_surface, 15, *i).draw()
     dog_surface = draw_dog()
     dog_surfaces = []
     dog_rects = []
@@ -139,21 +146,7 @@ def draw_house():
     circle(house_surface, BLACK, [575, 555], 25)
     return (house_surface, house_rect)
 
-# Walls:
-wall_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
-wall_surface.fill((0, 0, 0, 0))
-wall_rect = wall_surface.get_rect(center=(400, 400))
-massive_wall = ((300, 700, 100, 50), (400, 500, 0, 100), (300, 300, 0, 250), (200, 400, 400, 350))
-for i in massive_wall:
-    wall(wall_surface, 15, *i).draw()
-
-
-
-
-# Экран и фон
 screen = pygame.display.set_mode((800, 800))
-
-
 pygame.init()
 pygame.display.update()
 
