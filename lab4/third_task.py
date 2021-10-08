@@ -12,10 +12,6 @@ GREEN = (55, 200, 113)
 LIGHT_GRAY = (211, 211, 211)
 RED = (255, 0, 0)
 
-# чтобы много заборов сделать в третьем задании создаю сразу класс для забора:
-# lines_in_wall - число полосок в заборе, left_x и start_y задают левый верхний угол забора
-# where - это Surface, где будет находится стена.
-
 class wall:
     def __init__(self, where, length, width, left_x, start_y):
         self.where = where
@@ -45,7 +41,11 @@ class wall:
                 x = self.left_x + i * self.dx
                 for j in range(0, self.lines_x):
                     y = self.start_y + j * self.dy
-                    pr = random.randint(0, 100)
+                    pr = random.randint(0, 99)
+                    dic = {
+                        "0": RED, "1": BLUE, "2": (200, 100, 0), "3": (0, 0, 255), "4": (0, 255, 0)
+                    }
+                    rect(self.surf, dic.get(str(pr // 20)) , [x + self.dx / 4, y + self.dy / 4, self.dx / 2, self.dy / 2])
                     if pr < 10:
                         self.surf.blit(pygame.transform.scale(draw_dog(0), (self.dx, self.dy)) , (x, y))
                     elif 10 <= pr < 20:
@@ -54,12 +54,6 @@ class wall:
                         pass
                         #rect(self.surf, RED , [x, y, self.dx, self.dy])
         self.where.blit(self.surf, (0, 0))
-
-
-# далее все Surface'ы создаются через .copy(), чтобы избежать рисования на основном дисплее, то есть
-# мы при создании нужного нам Surface, который мы потом будем blit'ить с основным Surface
-# делаем так, чтобы при создании до блита ничего на дисплее не рисовалось. Также для всех Surface'ов
-# мы сразу создаем объекты get_rect, чтобы быть готовыми их blit'ить.
 
 def draw_dog_head(mouth):
     dog_head_surf = pygame.Surface((800, 800), pygame.SRCALPHA)
